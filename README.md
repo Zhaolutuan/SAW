@@ -3,6 +3,17 @@
 Tool-use RL training on top of [verl](https://github.com/volcengine/verl), with four
 advantage estimators for decoupled correctness / format rewards.
 
+## Release scope
+
+This release includes the GRPO and GDPO baselines and their SAW variants
+(`grpo-h` and `gdpo-h`) for tool calling with two rewards: correctness and format.
+The experimental implementations for the three-reward setting, the gradient-based
+weighting comparator, and other ablation experiments are not included in this
+release.
+
+The gradient-based weighting comparator used in the paper uses the implementation
+from [yining610/dynamic-reward-weighting](https://github.com/yining610/dynamic-reward-weighting).
+
 ## Installation
 Please install torch, vllm and ray according to your own environment configuration.
 ```
