@@ -203,9 +203,12 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
             cv_c = std_c / (torch.abs(mu_c_off) + eps)
             cv_f = std_f / (torch.abs(mu_f_off) + eps)
 
-            total_cv = cv_c + cv_f + eps
-            raw_w_corr = (cv_c / total_cv) * 2.0
-            raw_w_fmt = (cv_f / total_cv) * 2.0
+            total_cv = cv_c + cv_f
+            # Algorithm 1: use equal weights when every objective has zero CV.
+            raw_w_corr = torch.where(total_cv == 0, torch.ones_like(cv_c),
+                                     (cv_c / (total_cv + eps)) * 2.0)
+            raw_w_fmt = torch.where(total_cv == 0, torch.ones_like(cv_f),
+                                    (cv_f / (total_cv + eps)) * 2.0)
             w_corr = raw_w_corr.detach()  
             w_fmt = raw_w_fmt.detach()
         combined_rewards = (w_corr * token_level_scores_correctness) + \
@@ -232,9 +235,12 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
             epsilon = 1e-8
             cv_corr = std_c / (torch.abs(mu_c) + epsilon)
             cv_fmt = std_f / (torch.abs(mu_f) + epsilon)
-            total_cv = cv_corr + cv_fmt + epsilon
-            raw_w_corr = (cv_corr / total_cv) * 2.0
-            raw_w_fmt = (cv_fmt / total_cv) * 2.0
+            total_cv = cv_corr + cv_fmt
+            # Algorithm 1: use equal weights when every objective has zero CV.
+            raw_w_corr = torch.where(total_cv == 0, torch.ones_like(cv_corr),
+                                     (cv_corr / (total_cv + epsilon)) * 2.0)
+            raw_w_fmt = torch.where(total_cv == 0, torch.ones_like(cv_fmt),
+                                    (cv_fmt / (total_cv + epsilon)) * 2.0)
             w_corr = raw_w_corr.detach()  
             w_fmt = raw_w_fmt.detach()  
         corr_adv, _ = core_algos.compute_grpo_outcome_advantage(

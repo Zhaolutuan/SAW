@@ -14,8 +14,8 @@
 # limitations under the License.
 
 
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-export N_GPUS=8
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+export N_GPUS=4
 export ROLLOUT_TP_SIZE=1
 export VLLM_ATTENTION_BACKEND=XFORMERS
 
