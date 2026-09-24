@@ -68,3 +68,12 @@ python3 -u -m verl.trainer.main_ppo \
 
 To run a different variant, just change the `algorithm.adv_estimator=` line in
 `train_gdpo.sh` to `grpo`, `gdpo`, `grpo-h`, or `gdpo-h`.
+
+### KL settings
+
+The training script and default PPO configurations disable reward-side KL
+(`algorithm.kl_ctrl.kl_coef=0.0`). The script and FSDP configuration also disable
+the separate actor KL loss (`actor_rollout_ref.actor.use_kl_loss=False`,
+`actor_rollout_ref.actor.kl_loss_coef=0.0`), matching Table 4 of the paper.
+Setting `use_kl_loss=False` alone does not disable reward-side KL. Keep these
+settings when switching advantage estimators for comparisons.
